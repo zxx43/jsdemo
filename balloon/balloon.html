@@ -1,0 +1,149 @@
+<html>
+<script type="text/javascript">
+    var doc=document;
+    eval("var document=doc");
+
+    var bombMove=null;
+    function moveMouse(ev) {
+        cx=ev.clientX;
+        cy=ev.clientY;
+    }
+    function moveBomb() {
+        if(bombMove!=null) {
+            bombMove.bomb.x=cx-bombMove.bomb.w/2;
+            bombMove.bomb.y=cy-bombMove.bomb.h/2;
+        }
+    }
+</script>
+<head></head>
+<body onmousedown="checkClick();"
+      onmousemove="moveMouse(event);moveBomb();"
+      onkeydown="menuClick(event);">
+<div id="bgdiv"></div>
+<div id="screen"></div>
+<div id="sound"></div>
+</body>
+<script type="text/javascript" src="js/iepngfix.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/menu.js"></script>
+<script type="text/javascript" src="js/background.js"></script>
+<script type="text/javascript" src="js/ballon.js"></script>
+<script type="text/javascript" src="js/bomb.js"></script>
+<script type="text/javascript" src="js/boom.js"></script>
+<script type="text/javascript" src="js/player.js"></script>
+<script type="text/javascript">
+    var cx;
+    var cy;
+    var time;
+    var score;
+
+    initBg();
+    init();
+
+    setInterval("draw()",100);
+
+    function init() {
+        initObj();
+        cx=screenWidth/2;
+        cy=screenHeight/2;
+        initBomb();
+        time=0;
+        score=0;
+        sid=0;
+        mode=0;
+    }
+
+    function initObj() {
+        bombList.splice(0,bombList.length);
+        bombMove=null;
+        balloonList.splice(0,balloonList.length);
+        boomList.splice(0,boomList.length);
+    }
+
+    function draw() {
+        clearWindow();
+        if(mode!=0) {
+            time++;
+            drawScore();
+            drawBomb();
+            if(mode==1) {
+                addBalo(30,20);
+                drawTime();
+            } else if(mode==2)
+                addBalo(20,15);
+            boomAct();
+            balloonAct();
+            drawDart();
+        } else if(mode==0)
+            drawMenu();
+        playSound();
+        if(window.ActiveXObject)
+            correctPNG();
+        checkOver();
+        if(mode!=2)
+            flush();
+    }
+
+    function drawTime() {
+        var x=screenWidth/2-50;
+        var y=50;
+        var timeLeft=(maxTime-time)/10;
+        if(timeLeft==parseInt(timeLeft))
+            timeLeft=timeLeft+".0";
+        else
+            timeLeft=(maxTime-time)/10.0;
+        var html="<div style='position:absolute;" +
+                "left:"+x+";top:"+y+";'><h2 style='color:red;'>time:"+timeLeft+"</h2></div>"
+        scr.innerHTML+=html;
+    }
+
+    function checkClick() {
+        releaseBomb();
+        if(!checkCrash())
+            clickBomb();
+        else
+            score++;
+    }
+
+    function checkOver() {
+        if(checkGameOver(mode,time)) {
+            var name=prompt("Game Over!\nEnter Your Name:","");
+            if(name==null||name=="")
+                name="Default Player";
+            alert(name+"\n"+"Score:"+score);
+            mode=0;
+            init();
+        }
+    }
+
+    function drawDart() {
+        var img="img/dart.png";
+        var x=cx;
+        var y=cy-35;
+        var html="<img src='"+img+"' style='position:absolute;left:"+x+";top:"+y+";'/>";
+        scr.innerHTML+=html;
+    }
+
+    function menuClick(ev) {
+        var code;
+        if(!ev.which)
+            code=window.event.keyCode;
+        else if(ev.which)
+            code=ev.which;
+        if(mode==0) {
+            if(code==49)
+                mode=1;
+            else if(code==50)
+                mode=2;
+        } else if(mode!=0) {
+            if(code==27) {
+                if(confirm("Will you exit?")) {
+                    mode=0;
+                    init();
+                }
+            }
+        }
+    }
+
+</script>
+</html>

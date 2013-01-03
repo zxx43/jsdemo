@@ -1,0 +1,172 @@
+<html>
+<head>
+</head>
+<script type="text/javascript">
+    var doc=document;
+    eval("var document=doc");
+</script>
+<body onkeydown="keyDown(event);" onkeyup="keyUp(event);" onkeypress="keyPress(event);">
+<div id="bgs"></div>
+<div id="screen"></div>
+<div id="sound"></div>
+</body>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/background.js"></script>
+<script type="text/javascript" src="js/grass.js"></script>
+<script type="text/javascript" src="js/fish.js"></script>
+<script type="text/javascript" src="js/enimy.js"></script>
+<script type="text/javascript" src="js/player.js"></script>
+<script type="text/javascript">
+    var keyBuffer=new Array();
+    var time=0;
+    init();
+    setInterval("act()",100);
+    function draw() {
+        if(bgs.innerHTML==null||bgs.innerHTML=="")
+            bgs.appendChild(bgmap);
+        grass3.grassAct();
+        scr.appendChild(sealand);
+        drawScore();
+        fishAct();
+        enimyAct();
+        addEnimy();
+        grass2.grassAct();
+        grass1.grassAct();
+    }
+
+    function drawScore() {
+        var scoreBord=document.createElement("div");
+        scoreBord.style.position="absolute";
+        scoreBord.style.top=20;
+        scoreBord.style.left=screenWidth/2-50;
+        scoreBord.style.color="blue";
+        scoreBord.innerHTML="<h2>\u5F97\u5206:"+score+"</h2>";
+        scr.appendChild(scoreBord);
+    }
+
+    function init() {
+        initBack();
+        bgs.appendChild(bgmap);
+
+        initGrass();
+        initFish();
+        initEnimy();
+        sid=0;
+    }
+
+    function act() {
+        checkGameOver();
+        checkKey();
+        clearWindow();
+        frame=(frame==0?1:0);
+        draw();
+        checkEat(fishList,enimyList);
+        playSound();
+        flush();
+    }
+
+    function keyDown(ev) {
+        var code;
+        if(!ev.which)
+            code=window.event.keyCode;
+        else if(ev.which)
+            code=ev.which;
+        if(code==27)
+            exit();
+        else
+            keyBuffer[code]=true;
+    }
+
+    function keyPress(ev) { }
+
+    function keyUp(ev) {
+        var code;
+        if(!ev.which)
+            code=window.event.keyCode;
+        else if(ev.which)
+            code=ev.which;
+        keyBuffer[code]=false;
+    }
+
+    function checkKey() {
+        for(i in keyBuffer) {
+            if(keyBuffer[i]==true)
+                fishMove(i);
+        }
+    }
+
+    function flush() {
+        for(i in enimyList) {
+            var enim=enimyList[i];
+            var x=enim.enimy.x;
+            var lr=enim.enimy.lr;
+            if(lr==0) {
+                if(x<0)
+                    enimyList.splice(i,1);
+            } else if(lr==1) {
+                if(x>screenWidth)
+                    enimyList.splice(i,1);
+            }
+        }
+    }
+
+    function checkGameOver() {
+        if(fishList.length<=0) {
+            time++;
+            if(time>=10) {
+                var name=prompt("\u8BF7\u8F93\u5165\u540D\u5B57:","");
+                if(name==null||name=="")
+                    name="Default Player";
+                alert(name+"\n"+"\u4F60\u83B7\u5F97\u4E86:"+score+" \u5206");
+                window.location.reload();
+            }
+        }
+    }
+
+    function exit() {
+        var name=prompt("\u8BF7\u8F93\u5165\u540D\u5B57:","");
+        if(name==null||name=="")
+            name="Default Player";
+        alert(name+"\n"+"\u4F60\u83B7\u5F97\u4E86:"+score+" \u5206");
+        window.location.reload();
+    }
+
+    function checkEat(fishList,enimyList) {
+        for(i in fishList) {
+            var fish=fishList[i].fish;
+            var fl=fish.level;
+            var fishLeftX=fish.x-fish.width/2;
+            var fishRightX=fish.x+fish.width/2;
+            var fishTopY=fish.y-fish.height/2;
+            var fishButY=fish.y+fish.height/2;
+            var fishObj=new Array(fishRightX,fishLeftX,fishTopY,fishButY);
+            for(j in enimyList) {
+                var enimy=enimyList[j].enimy;
+                var el=enimy.level;
+                var enimyLeftX=enimy.x-enimy.width/2;
+                var enimyRightX=enimy.x+enimy.width/2;
+                var enimyTopY=enimy.y-enimy.height/2;
+                var enimyButY=enimy.y+enimy.height/2;
+                var enimyObj=new Array(enimyRightX,enimyLeftX,enimyTopY,enimyButY);
+
+                if(checkCrash(fishObj,enimyObj)||checkCrash(enimyObj,fishObj)) {
+                    if(fl>=el) {
+                        fishList[i].eat();
+                        initSound("sound/eat.mp3",5);
+                        fishList[i].drawFish();
+                        score+=el;
+                        enimyList.splice(j,1);
+                    } else if(fl<el) {
+                        enimyList[j].eat();
+                        initSound("sound/eat.mp3",5);
+                        enimyList[j].drawEnimy();
+                        fishList.splice(i,1);
+                    }
+                }
+            }
+        }
+
+    }
+</script>
+
+</html>
