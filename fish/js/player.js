@@ -12,6 +12,8 @@ function initSound(src,time) {
     sud.innerHTML+=html;
     initSud(src,time);
     sid++;
+    if(sid>100)
+	sid=0;
 }
 
 function initSud(src,time) {
@@ -38,7 +40,6 @@ function playSound() {
             if(document.getElementById("sud"+sund.sound.id)!=null)
                 sud.removeChild(document.getElementById("sud"+sund.sound.id));
             soundList.splice(i,1);
-            sid--;
         }
     }
 }
