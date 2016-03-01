@@ -2,21 +2,17 @@ var fishMaps;
 var fishList=new Array();
 
 function initFish() {
-    var fishl1Map=new Image();
-    var fishl2Map=new Image();
-    var fishr1Map=new Image();
-    var fishr2Map=new Image();
-    fishl1Map.src="img/fish_l1.gif";
-    fishl2Map.src="img/fish_l2.gif";
-    fishr1Map.src="img/fish_r1.gif";
-    fishr2Map.src="img/fish_r2.gif";
+    var fishl1Map="img/fish_l1.gif";
+    var fishl2Map="img/fish_l2.gif";
+    var fishr1Map="img/fish_r1.gif";
+    var fishr2Map="img/fish_r2.gif";
     fishMaps=new Array(fishl1Map,fishl2Map,fishr1Map,fishr2Map);
     var fish=new Fish(screenWidth/2,screenHeight/2,fishMaps[0]);
     fishList.push(fish);
 }
 
 function fishAct() {
-    for(i in fishList) {
+    for(var i in fishList) {
         var fish=fishList[i];
         fish.fishAct();
     }
@@ -43,14 +39,23 @@ function fishMove(code) {
 }
 
 function Fish(x,y,img) {
-    this.fish={x:x,y:y,lr:0,level:1,lrSpeed:12,udSpeed:6,picture:img,width:0,height:0};
+    this.fish={
+        id:1,
+        x:x,
+        y:y,
+        lr:0,
+        level:1,
+        lrSpeed:12,
+        udSpeed:6,
+        picture:img,
+        width:0,
+        height:0
+    };
     this.checkLevel;
-    this.fish.picture.style.position="absolute";
-    this.fish.picture.style.width=this.fish.width+6;
-    this.fish.picture.style.height=this.fish.height+4;
-    this.fish.picture.style.left=x-parseInt(this.fish.picture.style.width)/2;
-    this.fish.picture.style.top=y-parseInt(this.fish.picture.style.height)/2;
-    scr.appendChild(this.fish.picture);
+    var iw=this.fish.width+6;
+    var ih=this.fish.height+4;
+    var ix=x-iw/2;
+    var iy=y-ih/2;
     return this;
 }
 Fish.prototype.fishAct=function() {
@@ -62,12 +67,11 @@ Fish.prototype.fishAct=function() {
         fish.picture=(frame==0?fishMaps[2]:fishMaps[3]);
     this.checkLevelUp();
     this.checkLevel();
-    fish.picture.style.position="absolute";
-    fish.picture.style.width=fish.width+6;
-    fish.picture.style.height=fish.height+4;
-    fish.picture.style.left=fish.x-parseInt(fish.picture.style.width)/2;
-    fish.picture.style.top=fish.y-parseInt(fish.picture.style.height)/2;
-    this.drawFish();
+    var iw=fish.width+6;
+    var ih=fish.height+4;
+    var ix=fish.x-iw/2;
+    var iy=fish.y-ih/2;
+    this.drawFish(ix,iy,iw,ih);
 }
 Fish.prototype.checkOut=function() {
     var fish=this.fish;
@@ -80,16 +84,10 @@ Fish.prototype.checkOut=function() {
     if(fish.y<0)
         fish.y=0;
 }
-Fish.prototype.drawFish=function() {
+Fish.prototype.drawFish=function(ix,iy,iw,ih) {
     var fish=this.fish;
-    var src=fish.picture.src;
-    var pos=fish.picture.style.position;
-    var width=fish.picture.style.width;
-    var height=fish.picture.style.height
-    var left=fish.picture.style.left;
-    var top=fish.picture.style.top;
-    var html="<img src='"+src+"' style='position: "+pos+";width: "+width+";height: "+height+";left: "+left+";top: "+top+"'>";
-    scr.innerHTML+=html;
+    var fid="fish_"+fish.id;
+    drawSizeImg(fid,scr,fish.picture,ix,iy,iw,ih);
 }
 Fish.prototype.checkLevelUp=function() {
     var fish=this.fish;
@@ -110,12 +108,12 @@ Fish.prototype.checkLevelUp=function() {
 }
 Fish.prototype.eat=function() {
     var fish=this.fish;
-    var width=fish.picture.style.width;
-    var height=fish.picture.style.height;
-    fish.picture.style.width=parseInt(width)+12;
-    fish.picture.style.height=parseInt(height)+6;
-    fish.picture.style.left=fish.x-parseInt(fish.picture.style.width)/2;
-    fish.picture.style.top=fish.y-parseInt(fish.picture.style.height)/2;
+    var id="fish_"+fish.id;
+    var width=fish.width+18;
+    var height=fish.height+10;
+    var ix=fish.x-width/2;
+    var iy=fish.y-height/2;
+    drawSizeImg(id,scr,fish.picture,ix,iy,width,height);
 }
 Fish.prototype.checkLevel=function() {
     var fish=this.fish;
