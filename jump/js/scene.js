@@ -156,8 +156,8 @@ function personAct() {
         if(!showed) {
             alert("GAME OVER!");
             showed=true;
+            window.location.reload();
         }
-        window.location.reload();
     }
 }
 
