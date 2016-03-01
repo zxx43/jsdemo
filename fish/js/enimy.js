@@ -2,40 +2,25 @@ var enimy1Maps;
 var enimy2Maps;
 var enimy3Maps;
 var enimyList=new Array();
+var enimyId=0;
 
 function initEnimy() {
-    var enimy11lMap=new Image();
-    var enimy12lMap=new Image();
-    var enimy11rMap=new Image();
-    var enimy12rMap=new Image();
-    var enimy21lMap=new Image();
-    var enimy22lMap=new Image();
-    var enimy21rMap=new Image();
-    var enimy22rMap=new Image();
-    var enimy31lMap=new Image();
-    var enimy32lMap=new Image();
-    var enimy31rMap=new Image();
-    var enimy32rMap=new Image();
-    var enimy41lMap=new Image();
-    var enimy42lMap=new Image();
-    var enimy41rMap=new Image();
-    var enimy42rMap=new Image();
-    enimy11lMap.src="img/enim1_l1.gif";
-    enimy12lMap.src="img/enim1_l2.gif";
-    enimy11rMap.src="img/enim1_r1.gif";
-    enimy12rMap.src="img/enim1_r2.gif";
-    enimy21lMap.src="img/enim2_l1.gif";
-    enimy22lMap.src="img/enim2_l2.gif";
-    enimy21rMap.src="img/enim2_r1.gif";
-    enimy22rMap.src="img/enim2_r2.gif";
-    enimy31lMap.src="img/enim3_l1.gif";
-    enimy32lMap.src="img/enim3_l2.gif";
-    enimy31rMap.src="img/enim3_r1.gif";
-    enimy32rMap.src="img/enim3_r2.gif";
-    enimy41lMap.src="img/fish_l1.gif";
-    enimy42lMap.src="img/fish_l2.gif";
-    enimy41rMap.src="img/fish_r1.gif";
-    enimy42rMap.src="img/fish_r2.gif";
+    var enimy11lMap="img/enim1_l1.gif";
+    var enimy12lMap="img/enim1_l2.gif";
+    var enimy11rMap="img/enim1_r1.gif";
+    var enimy12rMap="img/enim1_r2.gif";
+    var enimy21lMap="img/enim2_l1.gif";
+    var enimy22lMap="img/enim2_l2.gif";
+    var enimy21rMap="img/enim2_r1.gif";
+    var enimy22rMap="img/enim2_r2.gif";
+    var enimy31lMap="img/enim3_l1.gif";
+    var enimy32lMap="img/enim3_l2.gif";
+    var enimy31rMap="img/enim3_r1.gif";
+    var enimy32rMap="img/enim3_r2.gif";
+    var enimy41lMap="img/fish_l1.gif";
+    var enimy42lMap="img/fish_l2.gif";
+    var enimy41rMap="img/fish_r1.gif";
+    var enimy42rMap="img/fish_r2.gif";
     enimy1Maps=new Array(enimy11lMap,enimy12lMap,enimy11rMap,enimy12rMap);
     enimy2Maps=new Array(enimy21lMap,enimy22lMap,enimy21rMap,enimy22rMap);
     enimy3Maps=new Array(enimy31lMap,enimy32lMap,enimy31rMap,enimy32rMap);
@@ -43,40 +28,43 @@ function initEnimy() {
 }
 
 function Enimy(x,y,lr,type,lv) {
-    var pic=document.createElement("img");
-    this.enimy={x:x,y:y,lr:lr,level:lv,type:type,lrSpeed:8,udSpeed:4,picture:pic,width:0,height:0};
+    this.enimy={
+        id:enimyId,
+        x:x,
+        y:y,
+        lr:lr,
+        level:lv,
+        type:type,
+        lrSpeed:8,
+        udSpeed:4,
+        picture:"",
+        width:0,
+        height:0
+    };
     this.enimyMaps=new Array();
-    this.checkImage;
-    this.checkLevel;
-    this.enimy.picture.style.position="absolute";
-    this.enimy.picture.style.width=this.enimy.width+6;
-    this.enimy.picture.style.height=this.enimy.height+4;
-    this.enimy.picture.style.left=x-parseInt(this.enimy.picture.style.width)/2;
-    this.enimy.picture.style.top=y-parseInt(this.enimy.picture.style.height)/2;
-//        scr.appendChild(this.enimy.picture);
+    this.checkImage();
+    this.checkLevel();
+    if(enimyId<100)
+        enimyId++;
+    if(enimyId>=100)
+        enimyId=0;
     return this;
 }
 Enimy.prototype.act=function() {
     var enimy=this.enimy;
     this.checkImage();
     this.checkLevel();
-    enimy.picture.style.position="absolute";
-    enimy.picture.style.width=enimy.width+6;
-    enimy.picture.style.height=enimy.height+4;
-    enimy.picture.style.left=enimy.x-parseInt(enimy.picture.style.width)/2;
-    enimy.picture.style.top=enimy.y-parseInt(enimy.picture.style.height)/2;
-    this.drawEnimy();
+    var iw=enimy.width+6;
+    var ih=enimy.height+4;
+    var ix=enimy.x-iw/2;
+    var iy=enimy.y-ih/2;
+    this.drawEnimy(ix,iy,iw,ih);
 }
-Enimy.prototype.drawEnimy=function() {
+Enimy.prototype.drawEnimy=function(ix,iy,iw,ih) {
     var enimy=this.enimy;
-    var src=enimy.picture.src;
-    var pos=enimy.picture.style.position;
-    var width=enimy.picture.style.width;
-    var height=enimy.picture.style.height
-    var left=enimy.picture.style.left;
-    var top=enimy.picture.style.top;
-    var html="<img src='"+src+"' style='position: "+pos+";width: "+width+";height: "+height+";left: "+left+";top: "+top+"'>";
-    scr.innerHTML+=html;
+    var id="eni_"+enimy.id;
+    var img=enimy.picture;
+    drawSizeImg(id,scr,img,ix,iy,iw,ih);
 }
 Enimy.prototype.move=function() {
     var enimy=this.enimy;
@@ -149,12 +137,12 @@ Enimy.prototype.moveAi=function(f) {
 }
 Enimy.prototype.eat=function() {
     var enimy=this.enimy;
-    var width=enimy.picture.style.width;
-    var height=enimy.picture.style.height;
-    enimy.picture.style.width=parseInt(width)+12;
-    enimy.picture.style.height=parseInt(height)+6;
-    enimy.picture.style.left=enimy.x-parseInt(enimy.picture.style.width)/2;
-    enimy.picture.style.top=enimy.y-parseInt(enimy.picture.style.height)/2;
+    var eid="eni_"+enimy.id;
+    var width=enimy.width+18;
+    var height=enimy.height+10;
+    var ix=enimy.x-width/2;
+    var iy=enimy.y-height/2;
+    drawSizeImg(eid,scr,enimy.picture,ix,iy,width,height);
 }
 Enimy.prototype.checkLevel=function() {
     if(this.enimy.level==1) {
@@ -218,7 +206,7 @@ function enimyAct() {
 function addEnimy() {
     var lr=0;
     var x=screenWidth+20;
-    var y=Math.random()*screenHeight;
+    var y=parseInt(Math.random()*screenHeight);
     var type=parseInt(Math.random()*4)+1;
     var lv=parseInt(Math.random()*9)+1;
     if(Math.random()*100<50)

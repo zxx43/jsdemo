@@ -1,0 +1,201 @@
+<html>
+<head>
+    <title>Pacman</title>
+</head>
+<body onkeydown="keyDown(event);">
+    <div id="back"></div>
+    <div id="act"></div>
+    <div id="chara"></div>
+    <div id="ghost"></div>
+    <div id="res"></div>
+    <div id="text"></div>
+</body>
+<script type="text/javascript" src="js/map.js"></script>
+<script type="text/javascript" src="js/constants.js"></script>
+<script type="text/javascript" src="js/resource.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/tile.js"></script>
+<script type="text/javascript" src="js/ball.js"></script>
+<script type="text/javascript" src="js/power.js"></script>
+<script type="text/javascript" src="js/pacman.js"></script>
+<script type="text/javascript" src="js/ghost.js"></script>
+<script type="text/javascript" src="js/ai.js"></script>
+<script type="text/javascript">
+    var loop=0;
+    var dist=NONE;
+    var PAC=null;
+    var isStart=false;
+
+    init();
+    var speed=10;
+    if(window.ActiveXObject) {
+        speed=10;
+        loadRes();
+    }
+    setInterval("act()",speed);
+
+    function initText() {
+        var sx=screenWidth/2-80;
+        var sy=screenHeight/2-30;
+        textDiv.style.position="absolute";
+        textDiv.style.top=sy;
+        textDiv.style.left=sx;
+    }
+
+    function init() {
+        initBack();
+        initText();
+        initActor();
+        initPac();
+        initGhosts();
+    }
+
+    function reInit() {
+        isStart=false;
+        dist=NONE;
+        actDiv.innerHTML="";
+        charaDiv.innerHTML="";
+        reInitBalls();
+        reInitPower();
+        reInitGhost();
+        initActor();
+        initPac();
+        initGhosts();
+    }
+
+    function initBack() {
+        initTiles(screenWidth,screenHeight,map);
+        setTimeout("drawTiles(backDiv,TILE_IMG);",1);
+        initMap();
+    }
+
+    function initActor() {
+        initBalls(screenWidth,screenHeight,map);
+        setTimeout("drawBalls(actDiv,BALL_IMG);",1);
+        initPowers(screenWidth,screenHeight,map);
+        setTimeout("drawPowers(actDiv,POWER_IMG);",1);
+    }
+
+    function initPac() {
+        PAC=new Pacman();
+    }
+
+    function initGhosts() {
+        addGhost(13,11,GHOST_R_IMG);
+        addGhost(13,13,GHOST_G_IMG);
+        addGhost(15,11,GHOST_Y_IMG);
+        addGhost(15,13,GHOST_P_IMG);
+    }
+
+    function isInit() {
+        if(tileState!=0&&ballState!=0&&powerState!=0)
+            return true;
+        return false;
+    }
+
+    function act() {
+        clearWindow();
+        if(!isGameOver()&&isStart) {
+            checkWin();
+            if(loop<16)
+                loop++;
+            else if(loop>=16)
+                loop=0;
+            pacAct();
+            ghostAct();
+        } else if(!isStart) {
+            drawText();
+        } else if(isGameOver()) {
+            reInit();
+        }
+    }
+
+    function drawText() {
+        if(!isInit())
+            textDiv.innerHTML=loadText;
+        else if(!isStart)
+            textDiv.innerHTML=startText;
+    }
+
+    function isGameOver() {
+        if(PAC.ate)
+            return true;
+        return false;
+    }
+
+    function checkWin() {
+        if(balls.length==0&&powers.length==0) {
+            alert("You Win !");
+            reInit();
+        }
+    }
+
+    function pacAct() {
+        if(PAC!=null&&!PAC.isAte()&&isInit()) {
+            PAC.pacAct(loop,dist);
+            var balleat=checkEatBall(PAC);
+            if(balleat!=null)
+                balleat.ballAte(actDiv);
+
+            var powereat=checkEatPower(PAC);
+            if(powereat!=null) {
+                powereat.powerAte(actDiv);
+                PAC.powertime+=powereat.time;
+            }
+        }
+    }
+
+    function ghostAct() {
+        if(isInit()) {
+            for(i=0;i<ghosts.length;i++) {
+                var gho=ghosts[i];
+                if(!gho.ate)
+                    checkEatAct(gho,PAC);
+                gho.ghoAct(PAC);
+            }
+            for(i=0;i<ghosts.length;i++) {
+                var gho=ghosts[i];
+                if(!gho.ate) {
+                    if(!PAC.powered)
+                        gho.drawGhoImg();
+                    else {
+                        if(PAC.powertime>100)
+                            gho.drawEscape(GHOST_ATE_IMG);
+                        else
+                            gho.drawEscape(GHOST_W_IMG);
+                    }
+                }
+            }
+        }
+    }
+
+    function checkKey(code) {
+        if(code!=-1&&isInit()) {
+            if(code==38) {
+                dist=UP;
+            } else if(code==40) {
+                dist=DOWN;
+            } else if(code==37) {
+                dist=LEFT;
+            } else if(code==39) {
+                dist=RIGHT;
+            } else if(code==13) {
+                if(!isStart) {
+                    dist=NONE;
+                    isStart=true;
+                }
+            }
+        }
+    }
+
+    function keyDown(ev) {
+        var code=-1;
+        if(!ev.which)
+            code=window.event.keyCode;
+        else if(ev.which)
+            code=ev.which;
+        checkKey(code);
+    }
+
+</script>
+</html>

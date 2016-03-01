@@ -1,57 +1,61 @@
 <html>
 <head>
+    <title>Fish</title>
 </head>
 <script type="text/javascript">
     var doc=document;
     eval("var document=doc");
 </script>
-<body onkeydown="keyDown(event);" onkeyup="keyUp(event);" onkeypress="keyPress(event);">
-<div id="bgs"></div>
+<body onkeydown="keyDown(event);" onkeyup="keyUp(event);" onkeypress="keyPress(event);"
+        style="overflow: hidden;">
+<div id="sea_img"></div>
+<div id="grass_back"></div>
+<div id="land_img"></div>
 <div id="screen"></div>
+<div id="grass_front"></div>
+<div id="score"></div>
+<div id="res"></div>
 <div id="sound"></div>
 </body>
 <script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/resource.js"></script>
 <script type="text/javascript" src="js/background.js"></script>
 <script type="text/javascript" src="js/grass.js"></script>
 <script type="text/javascript" src="js/fish.js"></script>
 <script type="text/javascript" src="js/enimy.js"></script>
 <script type="text/javascript" src="js/player.js"></script>
 <script type="text/javascript">
+    function lockWindow() {
+        document.body.scrollTop=0;
+        document.body.scrollLeft=0;
+        return false;
+    }
+
     var keyBuffer=new Array();
     var time=0;
     init();
-    setInterval("act()",100);
+    var speed=100;
+    if(window.ActiveXObject) {
+        loadRes();
+        speed=40;
+    }
+    setInterval("act()",speed);
     function draw() {
-        if(bgs.innerHTML==null||bgs.innerHTML=="")
-            bgs.appendChild(bgmap);
-        grass3.grassAct();
-        scr.appendChild(sealand);
         drawScore();
         fishAct();
         enimyAct();
         addEnimy();
+        grass3.grassAct();
         grass2.grassAct();
         grass1.grassAct();
     }
 
-    function drawScore() {
-        var scoreBord=document.createElement("div");
-        scoreBord.style.position="absolute";
-        scoreBord.style.top=20;
-        scoreBord.style.left=screenWidth/2-50;
-        scoreBord.style.color="blue";
-        scoreBord.innerHTML="<h2>\u5F97\u5206:"+score+"</h2>";
-        scr.appendChild(scoreBord);
-    }
-
     function init() {
         initBack();
-        bgs.appendChild(bgmap);
 
         initGrass();
         initFish();
         initEnimy();
-        sid=0;
     }
 
     function act() {
@@ -77,7 +81,7 @@
             keyBuffer[code]=true;
     }
 
-    function keyPress(ev) { }
+    function keyPress(ev) {}
 
     function keyUp(ev) {
         var code;
@@ -89,23 +93,31 @@
     }
 
     function checkKey() {
-        for(i in keyBuffer) {
+        for(var i in keyBuffer) {
             if(keyBuffer[i]==true)
                 fishMove(i);
         }
     }
 
     function flush() {
-        for(i in enimyList) {
+        for(var i in enimyList) {
             var enim=enimyList[i];
             var x=enim.enimy.x;
             var lr=enim.enimy.lr;
             if(lr==0) {
-                if(x<0)
+                if(x<-20) {
+                    var eni=enimyList[i];
+                    var eid="eni_"+eni.enimy.id;
+                    eraseImg(eid,scr);
                     enimyList.splice(i,1);
+                }
             } else if(lr==1) {
-                if(x>screenWidth)
+                if(x>screenWidth+20) {
+                    var eni=enimyList[i];
+                    var eid="eni_"+eni.enimy.id;
+                    eraseImg(eid,scr);
                     enimyList.splice(i,1);
+                }
             }
         }
     }
@@ -132,7 +144,7 @@
     }
 
     function checkEat(fishList,enimyList) {
-        for(i in fishList) {
+        for(var i in fishList) {
             var fish=fishList[i].fish;
             var fl=fish.level;
             var fishLeftX=fish.x-fish.width/2;
@@ -140,7 +152,7 @@
             var fishTopY=fish.y-fish.height/2;
             var fishButY=fish.y+fish.height/2;
             var fishObj=new Array(fishRightX,fishLeftX,fishTopY,fishButY);
-            for(j in enimyList) {
+            for(var j in enimyList) {
                 var enimy=enimyList[j].enimy;
                 var el=enimy.level;
                 var enimyLeftX=enimy.x-enimy.width/2;
@@ -153,13 +165,17 @@
                     if(fl>=el) {
                         fishList[i].eat();
                         initSound("sound/eat.mp3",5);
-                        fishList[i].drawFish();
                         score+=el;
+                        var ate=enimyList[j];
+                        var eid="eni_"+ate.enimy.id;
+                        eraseImg(eid,scr);
                         enimyList.splice(j,1);
                     } else if(fl<el) {
                         enimyList[j].eat();
                         initSound("sound/eat.mp3",5);
-                        enimyList[j].drawEnimy();
+                        var ate=fishList[i];
+                        var fid="fish_"+ate.fish.id;
+                        eraseImg(fid,scr);
                         fishList.splice(i,1);
                     }
                 }

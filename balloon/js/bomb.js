@@ -1,18 +1,30 @@
 var bombList=new Array();
+var boid=0;
 
 function Bomb(x,y) {
-    var img="img/bomb_01.png";
+    var img="img/bomb_01.gif";
     var width=52;
     var height=52
-    this.bomb={x:x,y:y,bfx:x,bfy:y,w:width,h:height,r:26,img:img};
+    this.bomb={
+        id:boid,
+        x:x,
+        y:y,
+        bfx:x,
+        bfy:y,
+        w:width,
+        h:height,
+        r:26,
+        img:img
+    };
+    boid++;
 }
 
 Bomb.prototype.draw=function() {
     var img=this.bomb.img;
     var x=this.bomb.x;
     var y=this.bomb.y;
-    var html="<img src="+img+" style='position:absolute;left:"+x+";top:"+y+";' />";
-    scr.innerHTML+=html;
+    var bid="bob_"+this.bomb.id;
+    drawImg(bid,scr,img,x,y);
 }
 
 function checkBoom() {
@@ -73,6 +85,8 @@ function releaseBomb() {
             for(var i=0;i<bombList.length;i++) {
                 var bomb=bombList[i];
                 if(bomb==bombMove) {
+                    var bid="bob_"+bomb.bomb.id;
+                    eraseImg(bid,scr);
                     bombList.splice(i,1);
                     bombMove=null;
                 }

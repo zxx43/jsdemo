@@ -6,49 +6,38 @@ var grass2;
 var grass3;
 
 function initGrass() {
-    var grass1_0=new Image();
-    var grass1_1=new Image();
-    var grass1_2=new Image();
-    var grass1_3=new Image();
-    var grass2_0=new Image();
-    var grass2_1=new Image();
-    var grass2_2=new Image();
-    var grass2_3=new Image();
-    var grass3_0=new Image();
-    var grass3_1=new Image();
-    var grass3_2=new Image();
-    var grass3_3=new Image();
-    grass1_0.src="img/grass1_0.gif";
-    grass1_0.height=82;
-    grass1_1.src="img/grass1_1.gif";
-    grass1_2.src="img/grass1_2.gif";
-    grass1_3.src="img/grass1_3.gif";
-    grass2_0.src="img/grass2_0.gif";
-    grass2_0.height=48;
-    grass2_1.src="img/grass2_1.gif";
-    grass2_2.src="img/grass2_2.gif";
-    grass2_3.src="img/grass2_3.gif";
-    grass3_0.src="img/grass3_0.gif";
-    grass3_0.height=112;
-    grass3_1.src="img/grass3_1.gif";
-    grass3_2.src="img/grass3_2.gif";
-    grass3_3.src="img/grass3_3.gif";
+    var grass1_0="img/grass1_0.gif";
+    var grass1_h=82;
+    var grass1_1="img/grass1_1.gif";
+    var grass1_2="img/grass1_2.gif";
+    var grass1_3="img/grass1_3.gif";
+    var grass2_0="img/grass2_0.gif";
+    var grass2_h=48;
+    var grass2_1="img/grass2_1.gif";
+    var grass2_2="img/grass2_2.gif";
+    var grass2_3="img/grass2_3.gif";
+    var grass3_0="img/grass3_0.gif";
+    var grass3_h=112;
+    var grass3_1="img/grass3_1.gif";
+    var grass3_2="img/grass3_2.gif";
+    var grass3_3="img/grass3_3.gif";
     grass1Map=new Array(grass1_0,grass1_1,grass1_2,grass1_3);
     grass2Map=new Array(grass2_0,grass2_1,grass2_2,grass2_3);
     grass3Map=new Array(grass3_0,grass3_1,grass3_2,grass3_3);
-    scr.appendChild(bgmap);
-    grass3=new Grass(440,screenHeight-grass3Map[0].height,grass3Map[0],3);
-    scr.appendChild(sealand);
-    grass1=new Grass(240,screenHeight-grass1Map[0].height,grass1Map[0],1);
-    grass2=new Grass(screenWidth-140,screenHeight-grass2Map[0].height,grass2Map[0],2);
+    grass3=new Grass(1,440,screenHeight-grass3_h,grass3Map[0],3);
+    grass1=new Grass(2,240,screenHeight-grass1_h,grass1Map[0],1);
+    grass2=new Grass(3,screenWidth-140,screenHeight-grass2_h,grass2Map[0],2);
 }
 
-function Grass(x,y,img,typ) {
-    this.grass={x:x,y:y,tp:typ,lr:0,time:0,picture:img};
-    this.grass.picture.style.position="absolute";
-    this.grass.picture.style.left=this.grass.x;
-    this.grass.picture.style.top=this.grass.y;
-    scr.appendChild(this.grass.picture);
+function Grass(id,x,y,img,type) {
+    this.grass={
+        id:id,
+        x:x,
+        y:y,
+        img:img,
+        tp:type,
+        time:0
+    }
     return this;
 }
 Grass.prototype.grassAct=function() {
@@ -63,18 +52,22 @@ Grass.prototype.grassAct=function() {
 
     if(grass.time<4) {
         if(grass.lr==0)
-            grass.picture=grassMap[grass.time];
+            grass.img=grassMap[grass.time];
         else if(grass.lr==1)
-            grass.picture=grassMap[3-grass.time];
-        grass.picture.style.position="absolute";
-        grass.picture.style.left=grass.x;
-        grass.picture.style.top=grass.y;
-        scr.appendChild(grass.picture);
+            grass.img=grassMap[3-grass.time];
+       this.draw();
         grass.time++;
-    }
-    else if(grass.time>=4) {
+    } else if(grass.time>=4) {
         grass.lr=(grass.lr==0?1:0);
         grass.time=0;
-        scr.appendChild(grass.picture);
+        this.draw();
     }
+}
+Grass.prototype.draw=function() {
+    var grass=this.grass;
+    var gid="grs_"+grass.id;
+    var div=g_front;
+    if(grass.tp==3)
+        div=g_back;
+    drawImg(gid,div,grass.img,grass.x,grass.y);
 }

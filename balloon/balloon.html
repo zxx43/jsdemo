@@ -15,16 +15,22 @@
         }
     }
 </script>
-<head></head>
+<head>
+    <title>Balloon</title>
+</head>
 <body onmousedown="checkClick();"
       onmousemove="moveMouse(event);moveBomb();"
-      onkeydown="menuClick(event);">
+      onkeydown="menuClick(event);"
+      style="overflow: hidden;">
 <div id="bgdiv"></div>
+<div id="score"></div>
+<div id="menu"></div>
 <div id="screen"></div>
+<div id="res"></div>
 <div id="sound"></div>
 </body>
-<script type="text/javascript" src="js/iepngfix.js"></script>
 <script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/resource.js"></script>
 <script type="text/javascript" src="js/menu.js"></script>
 <script type="text/javascript" src="js/background.js"></script>
 <script type="text/javascript" src="js/ballon.js"></script>
@@ -39,8 +45,12 @@
 
     initBg();
     init();
-
-    setInterval("draw()",100);
+    var speed=100;
+    if(window.ActiveXObject) {
+        speed=70;
+        loadRes();
+    }
+    setInterval("draw()",speed);
 
     function init() {
         initObj();
@@ -49,15 +59,18 @@
         initBomb();
         time=0;
         score=0;
-        sid=0;
         mode=0;
     }
 
     function initObj() {
+        scr.innerHTML="";
         bombList.splice(0,bombList.length);
         bombMove=null;
         balloonList.splice(0,balloonList.length);
         boomList.splice(0,boomList.length);
+        boid=0;
+        baloId=0;
+        booId=0;
     }
 
     function draw() {
@@ -77,8 +90,6 @@
         } else if(mode==0)
             drawMenu();
         playSound();
-        if(window.ActiveXObject)
-            correctPNG();
         checkOver();
         if(mode!=2)
             flush();
@@ -94,7 +105,7 @@
             timeLeft=(maxTime-time)/10.0;
         var html="<div style='position:absolute;" +
                 "left:"+x+";top:"+y+";'><h2 style='color:red;'>time:"+timeLeft+"</h2></div>"
-        scr.innerHTML+=html;
+        sco.innerHTML+=html;
     }
 
     function checkClick() {
@@ -117,29 +128,31 @@
     }
 
     function drawDart() {
-        var img="img/dart.png";
+        var img="img/dart.gif";
         var x=cx;
         var y=cy-35;
-        var html="<img src='"+img+"' style='position:absolute;left:"+x+";top:"+y+";'/>";
-        scr.innerHTML+=html;
+        var did="da_1";
+        drawImg(did,scr,img,x,y);
     }
 
     function menuClick(ev) {
         var code;
-        if(!ev.which)
-            code=window.event.keyCode;
-        else if(ev.which)
-            code=ev.which;
-        if(mode==0) {
-            if(code==49)
-                mode=1;
-            else if(code==50)
-                mode=2;
-        } else if(mode!=0) {
-            if(code==27) {
-                if(confirm("Will you exit?")) {
-                    mode=0;
-                    init();
+        if(state!=0) {
+            if(!ev.which)
+                code=window.event.keyCode;
+            else if(ev.which)
+                code=ev.which;
+            if(mode==0) {
+                if(code==49)
+                    mode=1;
+                else if(code==50)
+                    mode=2;
+            } else if(mode!=0) {
+                if(code==27) {
+                    if(confirm("Will you exit?")) {
+                        mode=0;
+                        init();
+                    }
                 }
             }
         }

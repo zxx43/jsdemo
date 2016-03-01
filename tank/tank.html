@@ -1,0 +1,147 @@
+<html>
+<head>
+    <title>Tank</title>
+</head>
+
+<body onkeydown="keyDown(event);"
+       onkeyup="keyUp(event);"
+       style="overflow: hidden;">
+    <div id="back"></div>
+    <div id="brick"></div>
+    <div id="enemy"></div>
+    <div id="chara"></div>
+    <div id="bullet"></div>
+    <div id="grass"></div>
+    <div id="text"></div>
+    <div id="sound"></div>
+</body>
+<script type="text/javascript" src="js/map.js"></script>
+<script type="text/javascript" src="js/constants.js"></script>
+<script type="text/javascript" src="js/key.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/tile.js"></script>
+<script type="text/javascript" src="js/brick.js"></script>
+<script type="text/javascript" src="js/boom.js"></script>
+<script type="text/javascript" src="js/tank.js"></script>
+<script type="text/javascript" src="js/enimy.js"></script>
+<script type="text/javascript" src="js/ai.js"></script>
+<script type="text/javascript" src="js/bullet.js"></script>
+<script type="text/javascript" src="js/player.js"></script>
+<script type="text/javascript">
+    init();
+
+    var gameSpeed=20;
+    if(window.ActiveXObject) {
+        gameSpeed=15;
+    }
+    setInterval("act()",gameSpeed);
+
+    function act() {
+        if(isInit()&&state!=STATE_START&&state!=STATE_LOAD) {
+            clearWindow();
+            clearText();
+            tankAct();
+            enimyAct();
+            if(enimyId<TANK_COUNT)
+                addEnimy();
+            else if(enimyId>=TANK_COUNT&&enimys.length<=0) {
+                alert("You Win! But Not Finished...");
+                initElements();
+            }
+            boomAct();
+            bulletAct(tiles,bricks);
+            checkGameOver();
+        } else if(state==STATE_START) {
+            drawText(STATE_START);
+        } else if(state==STATE_LOAD) {
+            drawText(STATE_LOAD);
+        }
+        playSound();
+    }
+
+    function checkGameOver() {
+        if(TANK.isDestory()) {
+            state=STATE_OVER;
+            if(restart)
+                initElements();
+            else if(state==STATE_OVER)
+                drawText(STATE_OVER);
+        }
+    }
+
+    function tankAct() {
+        if(TANK!=null) {
+            TANK.tankAct(dist,fireing);
+            TANK.draw();
+        }
+    }
+
+    function isInit() {
+        if(tileState!=0&&brickState!=0) {
+            if(state!=STATE_OVER&&state!=STATE_RUN)
+                state=STATE_START;
+            return true;
+        } else {
+            if(state!=STATE_LOAD)
+                state=STATE_LOAD;
+        }
+        return false;
+    }
+    function init() {
+        initBack();
+        initElements();
+    }
+
+    function initBricks() {
+        initBrick(screenWidth,screenHeight,map);
+        setTimeout("drawBricks();",1);
+    }
+    function initBack() {
+        initTiles(screenWidth,screenHeight,map);
+        setTimeout("drawTiles();",1);
+    }
+
+    function enimyAct() {
+        enimysAct();
+    }
+
+    function keyDown(ev) {
+        var code=-1;
+        if(!ev.which)
+            code=window.event.keyCode;
+        else if(ev.which)
+            code=ev.which;
+        checkKey(code,isInit());
+    }
+    function keyUp(ev) {
+        var code=-1;
+        if(!ev.which)
+            code=window.event.keyCode;
+        else if(ev.which)
+            code=ev.which;
+        checkRelease(code);
+    }
+
+    function initElements() {
+        dist=NONE;
+        fireing=false;
+        state=STATE_LOAD;
+        restart=false;
+
+        initCollMap();
+        enimys=new Array();
+        enimyId=0;
+        bullets=new Array();
+        tankBullets=new Array();
+        bulletId=0;
+        booms=new Array();
+        boomId=0;
+        TANK=new Tank();
+        refresh();
+        bricks=new Array();
+        brickState=0;
+        brickNow=0;
+        initBricks();
+    }
+</script>
+</html>

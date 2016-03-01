@@ -1,11 +1,25 @@
 var boomList=new Array();
+var booId=0;
 
 function Boom(x,y) {
-    var img="img/explosion.png";
+    var img="img/explosion.gif";
     var width=75;
     var height=75;
     var r=36;
-    this.boom={x:x,y:y,w:width,h:height,r:r,img:img,time:0};
+    this.boom={
+        id:booId,
+        x:x,
+        y:y,
+        w:width,
+        h:height,
+        r:r,
+        img:img,
+        time:0
+    };
+    if(booId<100)
+        booId++;
+    else if(booId>=100)
+        booId=0;
 }
 
 Boom.prototype.act=function() {
@@ -26,9 +40,8 @@ Boom.prototype.act=function() {
     }
     var box=boom.x-boom.w/2;
     var boy=boom.y-boom.h/2;
-    var html="<img src="+boom.img+" style='position:absolute;left:"+box+";top:"+boy+";" +
-        "width:"+boom.w+";height:"+boom.h+";'/>"
-    scr.innerHTML+=html;
+    var boid="bom_"+boom.id;
+    drawSizeImg(boid,scr,boom.img,box,boy,boom.w,boom.h);
     boom.time++;
 }
 
@@ -38,8 +51,11 @@ function boomAct() {
         var boom=boomList[i];
         boom.act();
         checkBombBalloon(boom);
-        if(boom.boom.time>=fulltime)
+        if(boom.boom.time>=fulltime) {
+            var boid="bom_"+boom.boom.id;
+            eraseImg(boid,scr);
             boomList.splice(i,1);
+        }
     }
 }
 
@@ -60,6 +76,8 @@ function checkBombBalloon(boom) {
         var br=balo.ballon.r;
         var dis=(box-bx)*(box-bx)+(boy-by)*(boy-by);
         if(dis<(bor+br)*(bor+br)) {
+            var bid="balo_"+balo.ballon.id;
+            eraseImg(bid,scr);
             balloonList.splice(j,1);
 //                initSound("sound/pop.wav",2);
             score++;

@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>Jump</title>
+</head>
+<script type="text/javascript" src="js/constants.js"></script>
+<script type="text/javascript" src="js/key.js"></script>
+<body onkeydown="keyDown(event);"
+      onkeyup="keyUp(event);"
+      style="overflow: hidden;background-color: black;">
+
+    <div id="objDIV"></div>
+    <div id="topDIV"></div>
+    <div id="personDIV"></div>
+    <div id="sound"></div>
+    <div id="resDIV"></div>
+</body>
+<script type="text/javascript" src="js/div.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/person.js"></script>
+<script type="text/javascript" src="js/brick.js"></script>
+<script type="text/javascript" src="js/fallen.js"></script>
+<script type="text/javascript" src="js/scroll.js"></script>
+<script type="text/javascript" src="js/spring.js"></script>
+<script type="text/javascript" src="js/spine.js"></script>
+<script type="text/javascript" src="js/scene.js"></script>
+<script type="text/javascript" src="js/player.js"></script>
+<script type="text/javascript" src="js/resource.js"></script>
+<script type="text/javascript">
+    drawImg(TOP_ID,TOP_DIV,IMG_SPINE_TOP,SCR_WIDTH/2-TOP_W/2,0);
+    loadRes();
+    init();
+
+    var gameSPD=0;
+    if(window.ActiveXObject)
+        gameSPD=30;
+    else
+        gameSPD=30;
+    setInterval("act()",gameSPD);
+
+    function keyDown(ev) {
+        var code=-1;
+        if(!ev.which)
+            code=window.event.keyCode;
+        else if(ev.which)
+            code=ev.which;
+        checkKey(code,true);
+    }
+
+    function keyUp(ev) {
+        var code=-1;
+        if(!ev.which)
+            code=window.event.keyCode;
+        else if(ev.which)
+            code=ev.which;
+        checkRelease(code);
+    }
+</script>
+</html>

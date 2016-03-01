@@ -2,33 +2,24 @@ var screenHeight=document.body.clientHeight;
 var screenWidth=document.body.clientWidth;
 var frame=0;
 var score=0;
-var bgmap;
-var sealand;
 
 function drawScore() {
-    var scoreBord=document.createElement("div");
-    scoreBord.style.position="absolute";
-    scoreBord.style.top=20;
-    scoreBord.style.left=screenWidth/2-50;
-    scoreBord.style.color="blue";
-    scoreBord.innerHTML="\u5F97\u5206:"+score;
-    scr.appendChild(scoreBord);
+    var sy=20;
+    var sx=screenWidth/2-50;
+    var color="blue";
+    var text="<h2 style='position: absolute;color: blue;" +
+        "left:"+sx+";top:"+sy+";'>\u5F97\u5206:"+score+"</h2>";
+    scoreDiv.innerHTML=text;
 }
 
 function initBack() {
-    bgmap=new Image();
-    bgmap.src="img/sea.gif";
-    bgmap.style.position="absolute";
-    bgmap.style.top=0;
-    bgmap.style.left=0;
-    bgmap.style.width=screenWidth;
-    bgmap.style.height=screenHeight;
+    var bgHTML="<img src='img/sea.gif' style='position: absolute;top: 0;left: 0;" +
+        "width:"+screenWidth+" ;height:"+screenHeight+" ;'/>";
+    seaDiv.innerHTML=bgHTML;
 
-    sealand=new Image();
-    sealand.src="img/oceanland.gif";
-    sealand.style.position="absolute";
-    sealand.style.left=0;
-    sealand.height=51;
-    sealand.style.top=screenHeight-sealand.height;
-    sealand.style.width=screenWidth;
+    var lh=51;
+    var ly=screenHeight-lh;
+    var ldHTML="<img src='img/oceanland.gif' style='position: absolute;left: 0;" +
+        "top:"+ly+";width:"+screenWidth+" ;height:"+lh+" ;'/>"
+    landDiv.innerHTML=ldHTML
 }
