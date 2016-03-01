@@ -1,10 +1,22 @@
 var balloonList=new Array();
 var maxTime=500;
+var baloId=0;
 
 function Balloon(x,y,speed) {
     var imgBallon=new Image();
     imgBallon.src="img/balloon1.gif";
-    this.ballon={x:x,y:y,r:18,spd:speed,img:imgBallon};
+    this.ballon={
+        id:baloId,
+        x:x,
+        y:y,
+        r:18,
+        spd:speed,
+        img:imgBallon
+    };
+    if(baloId<100)
+        baloId++;
+    else if(baloId>=100)
+        baloId=0;
 }
 
 Balloon.prototype.act=function() {
@@ -12,8 +24,8 @@ Balloon.prototype.act=function() {
     var x=this.ballon.x;
     this.ballon.y-=this.ballon.spd;
     var y=this.ballon.y;
-    var html="<img src='"+img+"' style='position:absolute;left:"+x+";top:"+y+";'/>";
-    scr.innerHTML+=html;
+    var bid="balo_"+this.ballon.id;
+    drawImg(bid,scr,img,x,y);
 }
 
 function balloonAct() {
@@ -47,6 +59,8 @@ function flush() {
     for(i in  balloonList) {
         var balo=balloonList[i];
         if(balo.ballon.y<-30) {
+            var bid="balo_"+balo.ballon.id;
+            eraseImg(bid,scr);
             balloonList.splice(i,1);
             return true;
         }
@@ -75,6 +89,8 @@ function checkCrash() {
         var r=balo.ballon.r;
         var dis=(bx-cx)*(bx-cx)+(by-cy)*(by-cy);
         if(dis<r*r) {
+            var bid="balo_"+balo.ballon.id;
+            eraseImg(bid,scr);
             balloonList.splice(i,1);
             initSound("sound/pop.wav",2);
             return true;
