@@ -1,0 +1,69 @@
+var NONE=0;
+var LEFT=1;
+var RIGHT=2;
+var UP=3;
+var DOWN=4;
+
+var MAX_FRAME=4;
+var TOP=0;
+var TOP_ID="top_sp";
+var TOP_W=1024;
+
+var PER_HEIGHT=32;
+var PER_WIDTH=30;
+var PID="per";
+
+var GRAVITY=4;
+var PER_LR_SPD=8;
+var CAM_SPD=5;
+var MAX_D_SPD=50;
+var SCROLL_SPD=4;
+var SPRING_SPD=20;
+var BRICK_SPD=4;
+
+var TYPE_NONE=0;
+var TYPE_BRICK=1;
+var TYPE_BRICK_LEFT=2;
+var TYPE_BRICK_RIGHT=3;
+var TYPE_FALLEN=4;
+var TYPE_SCROLL_L=5;
+var TYPE_SCROLL_R=6;
+var TYPE_SPINE=7;
+var TYPE_SPRING=8;
+var TYPE_SPRING_UP=9;
+
+var SUD_NORM="sound/normal.wav";
+var SUD_SPIK="sound/spiked.wav";
+var SUD_SPRI="sound/spring.wav";
+var SUD_UNST="sound/unstable.wav";
+
+var IMG_BG1="img/bg1.gif";
+var IMG_BG2="img/bg2.gif";
+var IMG_FALL1="img/fall_1.gif";
+var IMG_FALL2="img/fall_2.gif";
+var IMG_SPINE="img/hurt.gif";
+var IMG_SPINE_TOP="img/hurt_top.gif";
+var IMG_SCROLL_L1="img/roll_l1.gif";
+var IMG_SCROLL_L2="img/roll_l2.gif";
+var IMG_SCROLL_R1="img/roll_r1.gif";
+var IMG_SCROLL_R2="img/roll_r2.gif";
+var IMG_BRICK="img/stop.gif";
+var IMG_SPRING0="img/up_0.gif";
+var IMG_SPRING1="img/up_1.gif";
+var IMG_SPRING2="img/up_2.gif";
+var IMG_PERSON="img/woker.gif";
+var IMG_PERSON_F1="img/woker_f1.gif";
+var IMG_PERSON_F2="img/woker_f2.gif";
+var IMG_PERSON_FL1="img/woker_fl1.gif";
+var IMG_PERSON_FL2="img/woker_fl2.gif";
+var IMG_PERSON_FR1="img/woker_fr1.gif";
+var IMG_PERSON_FR2="img/woker_fr2.gif";
+var IMG_PERSON_RL1="img/woker_rl1.gif";
+var IMG_PERSON_RL2="img/woker_rl2.gif";
+var IMG_PERSON_RL3="img/woker_rl3.gif";
+var IMG_PERSON_RR1="img/woker_rr1.gif";
+var IMG_PERSON_RR2="img/woker_rr2.gif";
+var IMG_PERSON_RR3="img/woker_rr3.gif";
+var IMG_PERSON_U="img/woker_u.gif";
+var IMG_PERSON_UL="img/woker_ul.gif";
+var IMG_PERSON_UR="img/woker_ur.gif";
